@@ -1,62 +1,51 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface Props {
   onCameraStatusChange: (isOn: boolean) => void;
+  onStreamChange: (stream: MediaStream | null) => void;
+  showOnlyButton?: boolean;
 }
 
-export default function CameraTest({ onCameraStatusChange }: Props) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+export default function CameraTest({ onCameraStatusChange, onStreamChange, showOnlyButton }: Props) {
   const [isOn, setIsOn] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Store the current stream to stop tracks later
+  const streamRef = useRef<MediaStream | null>(null);
 
   const toggleCamera = async () => {
     if (!isOn) {
       try {
         const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (videoRef.current) videoRef.current.srcObject = mediaStream;
-        setStream(mediaStream);
+        streamRef.current = mediaStream;
+        onStreamChange(mediaStream);
         setIsOn(true);
-        setError(null);
         onCameraStatusChange(true);
-      } catch (err: any) {
+      } catch (err) {
         console.error('Camera error:', err);
-        setError('Camera access failed or denied.');
+        streamRef.current = null;
+        onStreamChange(null);
+        setIsOn(false);
         onCameraStatusChange(false);
       }
     } else {
-      stream?.getTracks().forEach(track => track.stop());
-      if (videoRef.current) videoRef.current.srcObject = null;
-      setStream(null);
+      // Stop all tracks to properly turn off the camera
+      streamRef.current?.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+      onStreamChange(null);
       setIsOn(false);
-      setError(null);
       onCameraStatusChange(false);
     }
   };
 
   return (
-    <section>
-  <h2 className="text-xl font-semibold mb-2">1. Camera Test</h2>
-
-  {error && <p className="text-red-600 mb-2">{error}</p>}  {/* Add margin bottom here if needed */}
-  
-  <video
-    ref={videoRef}
-    autoPlay
-    playsInline
-    className="w-80 h-60 rounded border object-cover mb-6"
-  />
-
-  <button
-    onClick={toggleCamera}
-    className={`mb-2 px-4 py-2 text-white rounded ${isOn ? 'bg-red-600' : 'bg-green-600'}`}
-  >
-    {isOn ? 'Stop Camera' : 'Start Camera'}
-  </button>
-
-
-    </section>
+    <button
+      onClick={toggleCamera}
+      className={`mb-2 px-4 py-2 text-white rounded ${
+        isOn ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
+      }`}
+    >
+      {isOn ? 'Stop Camera' : 'Start Camera'}
+    </button>
   );
 }

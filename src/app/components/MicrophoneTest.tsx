@@ -1,4 +1,3 @@
-// MicrophoneTest.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -29,7 +28,7 @@ export default function MicrophoneTest({ onMicStatusChange }: Props) {
         analyser.fftSize = 128;
 
         // Connect to analyser for visualizer
-        source.connect(analyser);
+        // source.connect(analyser);
 
         // Connect to audio output for live playback
         source.connect(audioCtx.destination);
@@ -87,9 +86,7 @@ export default function MicrophoneTest({ onMicStatusChange }: Props) {
   }, []);
 
   return (
-    <section className="w-80">
-      <h2 className="text-xl font-semibold mb-2">2. Microphone Test</h2>
-
+    <section >
       <button
         onClick={toggleMic}
         className={`mb-2 px-4 py-2 text-white rounded ${
@@ -101,18 +98,16 @@ export default function MicrophoneTest({ onMicStatusChange }: Props) {
 
       {error && <p className="text-red-600 mb-2">{error}</p>}
 
-      {isOn && (
+      {/* Visualizer disabled */}
+      {/* {isOn && (
         <div className="h-4 w-full bg-gray-300 rounded mb-2">
           <div
             className="h-4 bg-green-500 rounded transition-all duration-100"
             style={{ width: `${Math.min(level, 100)}%` }}
           />
         </div>
-      )}
-
-      <p className="text-sm text-gray-500">
-        You should hear your voice and see the green bar react.
-      </p>
+      )} */}
     </section>
   );
 }
+
