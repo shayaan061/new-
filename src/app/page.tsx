@@ -12,6 +12,11 @@ export default function TestPage() {
   const [isMicOn, setIsMicOn] = useState(false);
   const [networkStats, setNetworkStats] = useState<{ download: string; upload: string; ping: string } | null>(null);
 
+  // New error state hooks for each test
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [micError, setMicError] = useState<string | null>(null);
+  const [networkError, setNetworkError] = useState<string | null>(null);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -52,7 +57,6 @@ export default function TestPage() {
             <li>Test your microphone by speaking and observing the green bar activity.</li>
             <li>Run the network test to check if your connection is suitable.</li>
             <li>You need at least 2 Mbps upload and download speeds.</li>
-            <li> djbdhjbd </li>
             <li>All tests must pass to enable the "Start Interview" button.</li>
           </ul>
         </aside>
@@ -78,17 +82,44 @@ export default function TestPage() {
           </section>
 
           {/* Buttons row below the preview */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-2">
             <CameraTest
               onCameraStatusChange={setIsCameraOn}
               onStreamChange={setCameraStream}
+              onError={setCameraError}
               showOnlyButton
             />
-            <MicrophoneTest onMicStatusChange={setIsMicOn}  />
-            <NetworkTest onNetworkStats={setNetworkStats} showOnlyButton />
+            <MicrophoneTest
+              onMicStatusChange={setIsMicOn}
+              onError={setMicError}
+            />
+            <NetworkTest
+              onNetworkStats={setNetworkStats}
+              onError={setNetworkError}
+              showOnlyButton
+            />
           </div>
+
+          {/* Error messages container, visible only if any error */}
+          {(cameraError || micError || networkError) && (
+            <div className="p-3 border border-red-400 bg-red-50 rounded text-red-700 mb-4">
+              {cameraError && <p><strong>Camera:</strong> {cameraError}</p>}
+              {micError && <p><strong>Microphone:</strong> {micError}</p>}
+              {networkError && <p><strong>Network:</strong> {networkError}</p>}
+            </div>
+          )}
+
+          {/* Show network stats if available */}
+          {networkStats && (
+            <div className="mt-4 space-y-1">
+              <p><strong>Download:</strong> {networkStats.download} Mbps</p>
+              <p><strong>Upload:</strong> {networkStats.upload} Mbps</p>
+              <p><strong>Ping:</strong> {networkStats.ping} ms</p>
+            </div>
+          )}
         </main>
       </div>
     </div>
   );
 }
+

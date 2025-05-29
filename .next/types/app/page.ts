@@ -1,4 +1,4 @@
-// File: C:\Users\Work\Desktop\internship 9yt\camera\camera-check-app\src\app\page.tsx
+// File: C:\Users\Work\Desktop\internship 9yt\camera\prevalidation\src\app\page.tsx
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

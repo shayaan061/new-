@@ -11,46 +11,49 @@ interface NetworkStats {
 interface Props {
   onNetworkStats: (stats: NetworkStats) => void;
   showOnlyButton?: boolean;
+  onError?: (message: string | null) => void;
 }
 
-export default function NetworkTest({ onNetworkStats, showOnlyButton }: Props) {
+export default function NetworkTest({ onNetworkStats, showOnlyButton, onError }: Props) {
   const [stats, setStats] = useState<NetworkStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const test = async () => {
-    const res = await fetch('/api/network');
-    const data = await res.json();
-    setStats(data);
-    onNetworkStats(data);
+    try {
+      setError(null);
+      onError?.(null);
+
+      const res = await fetch('/api/network');
+      if (!res.ok) throw new Error('Network response was not ok');
+      const data = await res.json();
+
+      setStats(data);
+      onNetworkStats(data);
+    } catch (err) {
+      console.error('Network test error:', err);
+      const message = 'Failed to run network test. Please try again.';
+      setError(message);
+      onError?.(message);
+    }
   };
 
-  if (showOnlyButton) {
-    return (
-      <button
-        onClick={test}
-        className="mb-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Run Network Test
-      </button>
-    );
-  }
-
   return (
-    <section>
-      <h1 className="text-3xl font-bold mb-6">Network Test</h1>
-      <h2 className="text-xl font-semibold mb-2">3. Network Test</h2>
+    <div className="mb-4">
       <button
         onClick={test}
         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Run Network Test
       </button>
-      {stats && (
-        <div className="mt-4 space-y-1">
-          <p><strong>Download:</strong> {stats.download} Mbps</p>
-          <p><strong>Upload:</strong> {stats.upload} Mbps</p>
-          <p><strong>Ping:</strong> {stats.ping} ms</p>
+      {!showOnlyButton && stats && (
+        <div className="mt-2 text-sm">
+          <p>Download: {stats.download} Mbps</p>
+          <p>Upload: {stats.upload} Mbps</p>
+          <p>Ping: {stats.ping} ms</p>
         </div>
       )}
-    </section>
+      {/* Removed inline error display */}
+    </div>
   );
 }
+
