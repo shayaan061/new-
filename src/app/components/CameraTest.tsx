@@ -57,10 +57,10 @@ export default function CameraTest({ onCameraStatusChange, onStreamChange, showO
       <button
         onClick={toggleCamera}
         className={`px-4 py-2 text-white rounded ${
-          isOn ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
+          isOn ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'
         }`}
       >
-        {isOn ? 'Stop Camera' : 'Start Camera'}
+        {isOn ? 'Camera ✔️' : 'Camera'}
       </button>
       {/* Removed inline error display */}
     </div>
