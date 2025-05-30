@@ -12,7 +12,6 @@ export default function TestPage() {
   const [isMicOn, setIsMicOn] = useState(false);
   const [networkStats, setNetworkStats] = useState<{ download: string; upload: string; ping: string } | null>(null);
 
-  // New error state hooks for each test
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
   const [networkError, setNetworkError] = useState<string | null>(null);
@@ -49,8 +48,7 @@ export default function TestPage() {
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">System Test</h1>
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Instructions sidebar */}
-        <aside className="lg:w-1/3 w-full bg-gray-100 border rounded-lg p-4">
+        <aside className="w-120 h-120 bg-gray-100 border border-gray-300 rounded-lg p-4 flex-shrink-0 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-2">Instructions</h2>
           <ul className="list-disc list-inside text-gray-700 space-y-2 text-sm">
             <li>Ensure your camera is working. Click "Start Camera" and check the preview.</li>
@@ -61,15 +59,12 @@ export default function TestPage() {
           </ul>
         </aside>
 
-        {/* Main test area */}
         <main className="lg:w-2/3 w-full">
-          {/* Header with Start Interview button */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Run Your System Tests</h2>
             <StartInterview isReady={isReady} message={message} />
           </div>
 
-          {/* Always show camera preview video box */}
           <section className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Camera Preview</h3>
             <video
@@ -81,13 +76,12 @@ export default function TestPage() {
             />
           </section>
 
-          {/* Buttons row below the preview */}
           <div className="flex flex-wrap gap-4 mb-2">
             <CameraTest
               onCameraStatusChange={setIsCameraOn}
               onStreamChange={setCameraStream}
               onError={setCameraError}
-              showOnlyButton
+              
             />
             <MicrophoneTest
               onMicStatusChange={setIsMicOn}
@@ -100,16 +94,14 @@ export default function TestPage() {
             />
           </div>
 
-          {/* Error messages container, visible only if any error */}
           {(cameraError || micError || networkError) && (
-            <div className="p-3 border border-red-400 bg-red-50 rounded text-red-700 mb-4">
+            <div className="p-3 border border-red-400 bg-red-50 rounded text-red-700 mb-4 space-y-1 text-sm">
               {cameraError && <p><strong>Camera:</strong> {cameraError}</p>}
               {micError && <p><strong>Microphone:</strong> {micError}</p>}
               {networkError && <p><strong>Network:</strong> {networkError}</p>}
             </div>
           )}
 
-          {/* Show network stats if available */}
           {networkStats && (
             <div className="mt-4 space-y-1">
               <p><strong>Download:</strong> {networkStats.download} Mbps</p>
@@ -122,4 +114,3 @@ export default function TestPage() {
     </div>
   );
 }
-
