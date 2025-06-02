@@ -71,6 +71,7 @@ export default function MicTest({ onMicStatusChange, onError }: Props) {
     onMicStatusChange(false);
     setIsOn(false);
     setLevel(0);
+    setShowOverlay(false);
   };
 
   const startMicTest = async () => {
@@ -79,7 +80,14 @@ export default function MicTest({ onMicStatusChange, onError }: Props) {
       onError?.(null);
       setShowOverlay(true);
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const getMediaPromise = navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 10000)
+      );
+
+      const mediaStream = await Promise.race([getMediaPromise, timeoutPromise]);
+
       const audioCtx = new AudioContext();
       await audioCtx.resume();
 
@@ -128,6 +136,11 @@ export default function MicTest({ onMicStatusChange, onError }: Props) {
         }
       }, 8000);
     } catch (err: any) {
+      if (err.message === 'timeout') {
+        setAndReportError('Microphone permission prompt timed out. Please allow access.');
+        return;
+      }
+
       let message = 'An error occurred while accessing the microphone.';
       if (err.name === 'NotAllowedError') {
         message = 'Permission to access the microphone was denied.';
@@ -150,13 +163,11 @@ export default function MicTest({ onMicStatusChange, onError }: Props) {
   return (
     <section className="mb-4 relative">
       <div className="flex items-center space-x-4 mb-2">
-        <div className="w-52 h-12 px-4 py-2 rounded-full text-sm flex items-center justify-between bg-green-600 text-white">
-          <span className="ml-2">Microphone</span>
+        <div className="w-45 h-12 px-4 py-2 rounded-full text-sm flex items-center justify-between bg-blue-600 text-white">
+          <span className="ml-3">Microphone</span>
           <MicSwitch checked={isOn} onChange={handleSwitchChange} />
         </div>
       </div>
-
-      {/* {error && <p className="text-red-600 text-sm mt-2">{error}</p>} */}
 
       {showOverlay && (
         <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">

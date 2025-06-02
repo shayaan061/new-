@@ -7,11 +7,11 @@ interface Props {
 
 export default function StartInterview({ isReady, message }: Props) {
   return (
-    <section>
+    <section className="flex flex-col items-end">
       <button
         onClick={() => alert('Interview Started!')}
         disabled={!isReady}
-        className={`w-full max-w-md px-4 py-2 text-white rounded ${
+        className={`w-32 h-12 px-4.5 py-2 rounded-full text-sm flex items-center justify-between ${
           isReady ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-400 cursor-not-allowed'
         }`}
       >

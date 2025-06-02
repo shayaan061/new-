@@ -41,7 +41,7 @@ export default function NetworkTest({ onNetworkStats, showOnlyButton, onError }:
     <div className="mb-4">
       <button
   onClick={test}
-  className="w-52 h-12 px-4 py-2 mb-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 text-sm"
+  className="w-45 h-12 px-4 py-2 mb-2 bg-green-600 text-white rounded-full hover:bg-green-700 text-sm"
 >
   Run Network Test
 </button>

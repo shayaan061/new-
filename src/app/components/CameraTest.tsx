@@ -133,8 +133,8 @@ export default function CameraTest({ onCameraStatusChange, onStreamChange, onErr
 return (
   <section className="mb-4 relative">
     <div className="flex items-center space-x-4 mb-2">
-      <div className="w-52 h-12 px-4 py-2 rounded-full text-sm flex items-center justify-between bg-blue-600 text-white">
-        <span className="ml-2">Camera</span>
+      <div className="w-45 h-12 px-4 py-2 rounded-full text-sm flex items-center justify-between bg-blue-600 text-white">
+        <span className="ml-6">Camera</span>
         <CamSwitch checked={isOn} onChange={handleSwitchChange} />
       </div>
     </div>
